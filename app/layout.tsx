@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Gear Sales Vitrine",
-  description: "Vitrine web Gear Sales",
+  title: {
+    default: "Gear Sales Vitrine",
+    template: "%s | Gear Sales",
+  },
+  description: "Vitrine pública de lojas no Gear Sales.",
 };
 
 export default function RootLayout({
@@ -13,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
