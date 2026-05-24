@@ -1,17 +1,14 @@
+import { SobreContent } from "@/components/sobre/SobreContent"
 import { VitrineShell } from "@/components/layout/VitrineShell"
 import { StateLayout } from "@/components/states/StateLayout"
 import { VitrineLoadError } from "@/components/states/VitrineLoadError"
 import { VitrineUnavailable } from "@/components/states/VitrineUnavailable"
-import { VitrineHome } from "@/components/vitrine/VitrineHome"
 import { getVitrineForRequest } from "@/src/lib/get-vitrine"
 import {
-  buildHomeMetadata,
+  buildSobreMetadata,
   getDefaultMetadata,
 } from "@/src/lib/metadata"
-import {
-  getAnunciosForLoja,
-  type VitrineLoja,
-} from "@/src/lib/vitrine-data"
+import type { VitrineLoja } from "@/src/lib/vitrine-data"
 import { VitrineDomainError } from "@/src/lib/vitrine-domain"
 import { VitrineNotFoundError } from "@/src/services/vitrineMockService"
 
@@ -20,13 +17,13 @@ type PageState = "success" | "not_found" | "error"
 export async function generateMetadata() {
   try {
     const vitrine = await getVitrineForRequest()
-    return buildHomeMetadata(vitrine)
+    return buildSobreMetadata(vitrine)
   } catch {
     return getDefaultMetadata()
   }
 }
 
-async function loadVitrinePage(): Promise<{
+async function loadSobrePage(): Promise<{
   state: PageState
   vitrine?: VitrineLoja
 }> {
@@ -37,17 +34,15 @@ async function loadVitrinePage(): Promise<{
     if (error instanceof VitrineNotFoundError) {
       return { state: "not_found" }
     }
-
     if (error instanceof VitrineDomainError) {
       return { state: "error" }
     }
-
     return { state: "error" }
   }
 }
 
-export default async function HomePage() {
-  const { state, vitrine } = await loadVitrinePage()
+export default async function SobrePage() {
+  const { state, vitrine } = await loadSobrePage()
 
   if (state === "not_found") {
     return (
@@ -65,11 +60,9 @@ export default async function HomePage() {
     )
   }
 
-  const anuncios = await getAnunciosForLoja(vitrine.id)
-
   return (
     <VitrineShell loja={vitrine}>
-      <VitrineHome loja={vitrine} anuncios={anuncios} />
+      <SobreContent loja={vitrine} />
     </VitrineShell>
   )
 }

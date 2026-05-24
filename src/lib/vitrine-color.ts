@@ -4,7 +4,10 @@ const RGB_COLOR =
 const HSL_COLOR =
   /^hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%(?:\s*,\s*(0|1|0?\.\d+))?\s*\)$/i
 
-const DEFAULT_PRIMARY = "#c2410c"
+/** Cor padrão alinhada ao Gear Sales (laranja-avermelhado). */
+export const GEAR_SALES_DEFAULT_PRIMARY = "#c2410c"
+
+const DEFAULT_PRIMARY = GEAR_SALES_DEFAULT_PRIMARY
 
 function isRgbChannelValid(value: string): boolean {
   const channel = Number(value)
