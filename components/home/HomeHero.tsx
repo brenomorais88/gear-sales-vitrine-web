@@ -5,18 +5,16 @@ import {
 } from "@/src/lib/whatsapp"
 import type { VitrineLoja } from "@/src/types/vitrine"
 import { formatLocation } from "@/src/utils/format"
+import { getLojaDisplayName, getLojaIntroCurta } from "@/src/utils/loja"
 
 interface HomeHeroProps {
   loja: VitrineLoja
 }
 
 export function HomeHero({ loja }: HomeHeroProps) {
-  const displayName = loja.nomePublico?.trim() || loja.nome
+  const displayName = getLojaDisplayName(loja)
   const location = formatLocation(loja.cidade, loja.estado)
-  const intro =
-    loja.descricao?.trim() ||
-    loja.textoInstitucional?.trim().slice(0, 200) ||
-    null
+  const intro = getLojaIntroCurta(loja)
   const whatsappHref = loja.whatsapp
     ? buildWhatsAppUrl(loja.whatsapp, buildLojaWhatsAppMessage(displayName))
     : null

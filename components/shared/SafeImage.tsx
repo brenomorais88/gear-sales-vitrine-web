@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { MOCK_PLACEHOLDER_IMAGE } from "@/src/mocks/images"
+import { VEHICLE_PLACEHOLDER_IMAGE } from "@/src/lib/placeholders"
 
 interface SafeImageProps {
   src: string | null | undefined
@@ -15,7 +15,7 @@ export function SafeImage({
   src,
   alt,
   className,
-  fallbackSrc = MOCK_PLACEHOLDER_IMAGE,
+  fallbackSrc = VEHICLE_PLACEHOLDER_IMAGE,
 }: SafeImageProps) {
   const [currentSrc, setCurrentSrc] = useState(src?.trim() || fallbackSrc)
   const [hasError, setHasError] = useState(false)

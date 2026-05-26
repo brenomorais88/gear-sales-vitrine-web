@@ -10,7 +10,7 @@ import {
 } from "@/src/lib/metadata"
 import type { VitrineLoja } from "@/src/lib/vitrine-data"
 import { VitrineDomainError } from "@/src/lib/vitrine-domain"
-import { VitrineNotFoundError } from "@/src/services/vitrineMockService"
+import { VitrineNotFoundError } from "@/src/services/vitrineService"
 
 type PageState = "success" | "not_found" | "error"
 

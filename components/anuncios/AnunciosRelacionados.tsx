@@ -1,6 +1,7 @@
 import { AnuncioCard } from "@/components/anuncios/AnuncioCard"
 import type { VitrineAnuncio } from "@/src/types/anuncio"
 import type { VitrineLoja } from "@/src/types/vitrine"
+import { getLojaDisplayName } from "@/src/utils/loja"
 
 interface AnunciosRelacionadosProps {
   anuncios: VitrineAnuncio[]
@@ -10,7 +11,7 @@ interface AnunciosRelacionadosProps {
 export function AnunciosRelacionados({ anuncios, loja }: AnunciosRelacionadosProps) {
   if (anuncios.length === 0) return null
 
-  const displayName = loja.nomePublico?.trim() || loja.nome
+  const displayName = getLojaDisplayName(loja)
 
   return (
     <section

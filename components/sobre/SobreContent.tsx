@@ -4,6 +4,7 @@ import { SobreContact } from "@/components/sobre/SobreContact"
 import { SobreCtas } from "@/components/sobre/SobreCtas"
 import { SobreHero } from "@/components/sobre/SobreHero"
 import { SobreLocation } from "@/components/sobre/SobreLocation"
+import { SobrePaginaPublica } from "@/components/sobre/SobrePaginaPublica"
 import { SobreTrust } from "@/components/sobre/SobreTrust"
 import type { VitrineLoja } from "@/src/types/vitrine"
 
@@ -28,6 +29,7 @@ export function SobreContent({ loja }: SobreContentProps) {
             <SobreAbout loja={loja} />
             <SobreContact loja={loja} />
             <SobreLocation loja={loja} />
+            <SobrePaginaPublica loja={loja} />
             <SobreTrust />
           </div>
 

@@ -5,55 +5,52 @@ import { formatLocation } from "@/src/utils/format"
 const INSTITUCIONAL_FALLBACK =
   "Esta loja ainda não adicionou uma descrição institucional."
 
+const INTRO_MAX_LENGTH = 200
+
 export function getLojaDisplayName(loja: VitrineLoja): string {
-  return loja.nomePublico?.trim() || loja.nome
+  return loja.nome
 }
 
+/**
+ * Texto curto usado em heros (até ~200 caracteres). Sempre derivado de `descricao`.
+ */
 export function getLojaIntroCurta(loja: VitrineLoja): string | null {
-  return (
-    loja.descricao?.trim() ||
-    loja.textoInstitucional?.trim().slice(0, 200) ||
-    null
-  )
+  const descricao = loja.descricao?.trim()
+  if (!descricao) {
+    return null
+  }
+  return descricao.length > INTRO_MAX_LENGTH
+    ? `${descricao.slice(0, INTRO_MAX_LENGTH).trim()}…`
+    : descricao
 }
 
+/**
+ * Texto completo institucional para a página /sobre. Quando ausente,
+ * devolve um fallback discreto sinalizado em `isFallback`.
+ */
 export function getLojaTextoInstitucional(loja: VitrineLoja): {
   texto: string
   isFallback: boolean
 } {
-  const texto =
-    loja.textoInstitucional?.trim() || loja.descricao?.trim() || ""
-
+  const texto = loja.descricao?.trim() || ""
   if (texto) {
     return { texto, isFallback: false }
   }
-
   return { texto: INSTITUCIONAL_FALLBACK, isFallback: true }
 }
 
+/**
+ * Endereço público de exibição. O backend público só expõe cidade/estado.
+ */
 export function formatLojaEnderecoCompleto(loja: VitrineLoja): string | null {
-  const endereco = loja.endereco?.trim()
-  const location = formatLocation(loja.cidade, loja.estado)
-
-  if (endereco && location) {
-    return `${endereco} · ${location}`
-  }
-
-  return endereco || location
+  return formatLocation(loja.cidade, loja.estado)
 }
 
 export function getLojaEnderecoParaMapa(loja: VitrineLoja): string | null {
-  const parts = [
-    loja.endereco?.trim(),
-    loja.cidade?.trim(),
-    loja.estado?.trim(),
-  ].filter(Boolean)
-
+  const parts = [loja.cidade?.trim(), loja.estado?.trim()].filter(Boolean)
   return parts.length > 0 ? parts.join(", ") : null
 }
 
 export function hasLojaLocalizacao(loja: VitrineLoja): boolean {
-  return Boolean(
-    loja.endereco?.trim() || loja.cidade?.trim() || loja.estado?.trim()
-  )
+  return Boolean(loja.cidade?.trim() || loja.estado?.trim())
 }

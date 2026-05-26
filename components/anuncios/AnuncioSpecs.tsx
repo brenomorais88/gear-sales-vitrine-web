@@ -10,31 +10,33 @@ interface SpecRow {
   value: string
 }
 
+function pushIf(rows: SpecRow[], label: string, value: string | null) {
+  const trimmed = value?.trim()
+  if (trimmed) {
+    rows.push({ label, value: trimmed })
+  }
+}
+
 export function AnuncioSpecs({ anuncio }: AnuncioSpecsProps) {
   const location = formatLocation(anuncio.cidade, anuncio.estado)
 
-  const rows: SpecRow[] = [
-    { label: "Marca", value: anuncio.marca },
-    { label: "Modelo", value: anuncio.modelo },
-    ...(anuncio.versao
-      ? [{ label: "Versão", value: anuncio.versao }]
-      : []),
-    {
-      label: "Ano",
-      value: formatAno(anuncio.anoFabricacao, anuncio.anoModelo),
-    },
-    { label: "Quilometragem", value: formatKm(anuncio.quilometragem) },
-    { label: "Câmbio", value: anuncio.cambio },
-    { label: "Combustível", value: anuncio.combustivel },
-    { label: "Cor", value: anuncio.cor },
-    ...(anuncio.carroceria
-      ? [{ label: "Carroceria", value: anuncio.carroceria }]
-      : []),
-    ...(anuncio.portas != null
-      ? [{ label: "Portas", value: String(anuncio.portas) }]
-      : []),
-    ...(location ? [{ label: "Localização", value: location }] : []),
-  ]
+  const rows: SpecRow[] = []
+  pushIf(rows, "Marca", anuncio.marca)
+  pushIf(rows, "Modelo", anuncio.modelo)
+  pushIf(rows, "Versão", anuncio.versao)
+  rows.push({
+    label: "Ano",
+    value: formatAno(anuncio.anoFabricacao, anuncio.anoModelo),
+  })
+  rows.push({ label: "Quilometragem", value: formatKm(anuncio.quilometragem) })
+  pushIf(rows, "Câmbio", anuncio.cambio)
+  pushIf(rows, "Combustível", anuncio.combustivel)
+  pushIf(rows, "Cor", anuncio.cor)
+  pushIf(rows, "Carroceria", anuncio.carroceria)
+  if (anuncio.portas != null) {
+    rows.push({ label: "Portas", value: String(anuncio.portas) })
+  }
+  pushIf(rows, "Localização", location)
 
   return (
     <section className="anuncio-section" aria-labelledby="anuncio-specs-title">

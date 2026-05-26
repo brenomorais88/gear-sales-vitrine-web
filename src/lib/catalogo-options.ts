@@ -25,18 +25,26 @@ export function getModelosFromAnuncios(
   return uniqueSorted(filtered.map((a) => a.modelo))
 }
 
+function compact(values: Array<string | null | undefined>): string[] {
+  return values.filter((v): v is string => Boolean(v?.trim()))
+}
+
 export function getCambiosFromAnuncios(anuncios: VitrineAnuncio[]): string[] {
   return uniqueSorted(
-    anuncios
-      .filter((a) => a.status === "DISPONIVEL")
-      .map((a) => a.cambio)
+    compact(
+      anuncios
+        .filter((a) => a.status === "DISPONIVEL")
+        .map((a) => a.cambio)
+    )
   )
 }
 
 export function getCombustiveisFromAnuncios(anuncios: VitrineAnuncio[]): string[] {
   return uniqueSorted(
-    anuncios
-      .filter((a) => a.status === "DISPONIVEL")
-      .map((a) => a.combustivel)
+    compact(
+      anuncios
+        .filter((a) => a.status === "DISPONIVEL")
+        .map((a) => a.combustivel)
+    )
   )
 }

@@ -1,3 +1,11 @@
+/**
+ * Tipos do catálogo público de anúncios.
+ *
+ * Mapeados a partir de `GaragePublicCatalogItemResponse` no backend
+ * (endpoint `GET /garage/public/catalog`). Campos não retornados pelo
+ * endpoint público são opcionais (`null`) e devem ser exibidos
+ * apenas se presentes.
+ */
 export type VitrineAnuncioStatus =
   | "DISPONIVEL"
   | "RESERVADO"
@@ -6,6 +14,8 @@ export type VitrineAnuncioStatus =
 
 export interface VitrineAnuncio {
   id: string
+  /** Loja dona do anúncio — usado para filtrar o catálogo público por vitrine. */
+  lojaId: string
   titulo: string
   marca: string
   modelo: string
@@ -14,8 +24,8 @@ export interface VitrineAnuncio {
   anoModelo: number
   preco: number
   quilometragem: number
-  cambio: string
-  combustivel: string
+  cambio: string | null
+  combustivel: string | null
   cor: string
   carroceria: string | null
   portas: number | null
@@ -23,7 +33,7 @@ export interface VitrineAnuncio {
   estado: string | null
   descricao: string
   opcionais: string[]
-  imagemCapaUrl: string
+  imagemCapaUrl: string | null
   imagens: string[]
   publicadoEm: string
   status: VitrineAnuncioStatus

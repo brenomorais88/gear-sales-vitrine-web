@@ -3,11 +3,11 @@
 import { useMemo, useState } from "react"
 
 import { SafeImage } from "@/components/shared/SafeImage"
-import { MOCK_PLACEHOLDER_IMAGE } from "@/src/mocks/images"
+import { VEHICLE_PLACEHOLDER_IMAGE } from "@/src/lib/placeholders"
 
 interface AnuncioGalleryProps {
   titulo: string
-  imagemCapaUrl: string
+  imagemCapaUrl: string | null
   imagens: string[]
 }
 
@@ -17,9 +17,9 @@ export function AnuncioGallery({
   imagens,
 }: AnuncioGalleryProps) {
   const fotos = useMemo(() => {
-    const urls = imagens.length > 0 ? imagens : [imagemCapaUrl]
-    const unique = [...new Set(urls.filter(Boolean))]
-    return unique.length > 0 ? unique : [MOCK_PLACEHOLDER_IMAGE]
+    const urls = imagens.length > 0 ? imagens : [imagemCapaUrl ?? ""]
+    const unique = [...new Set(urls.filter(Boolean))] as string[]
+    return unique.length > 0 ? unique : [VEHICLE_PLACEHOLDER_IMAGE]
   }, [imagemCapaUrl, imagens])
 
   const [selectedIndex, setSelectedIndex] = useState(0)

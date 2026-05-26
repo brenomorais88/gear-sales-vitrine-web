@@ -16,7 +16,7 @@ import {
   type VitrineLoja,
 } from "@/src/lib/vitrine-data"
 import { VitrineDomainError } from "@/src/lib/vitrine-domain"
-import { VitrineNotFoundError } from "@/src/services/vitrineMockService"
+import { VitrineNotFoundError } from "@/src/services/vitrineService"
 
 interface AnuncioPageProps {
   params: Promise<{ id: string }>

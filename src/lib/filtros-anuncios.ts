@@ -78,13 +78,13 @@ export function filtrarAnuncios(
     if (anoMin !== null && ano < anoMin) return false
     if (anoMax !== null && ano > anoMax) return false
 
-    if (filtros.cambio !== "todos" && anuncio.cambio !== filtros.cambio) {
+    if (filtros.cambio !== "todos" && (anuncio.cambio ?? "") !== filtros.cambio) {
       return false
     }
 
     if (
       filtros.combustivel !== "todos" &&
-      anuncio.combustivel !== filtros.combustivel
+      (anuncio.combustivel ?? "") !== filtros.combustivel
     ) {
       return false
     }

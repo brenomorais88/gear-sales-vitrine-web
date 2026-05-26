@@ -1,15 +1,27 @@
 import { StatePage } from "@/components/states/StatePage"
+import { GEAR_SALES_SITE_URL } from "@/src/lib/gear-sales-brand"
 
 /**
- * Loja/vitrine não encontrada (ex.: API 404 no domínio).
+ * Loja não encontrada ou indisponível (ex.: domínio sem vitrine cadastrada).
+ *
+ * Mostra mensagem amigável e direciona o visitante para o site institucional
+ * do Gear Sales — evitando erro técnico, loading infinito ou tela em branco.
  */
 export function VitrineUnavailable() {
   return (
     <StatePage
-      statusCode="404"
       icon="not-found"
-      title="Vitrine não encontrada"
-      description="Verifique se o endereço está correto ou se a loja ainda está ativa."
-    />
+      title="Loja não encontrada"
+      description="A página que você tentou acessar não está disponível ou foi removida."
+    >
+      <a
+        href={GEAR_SALES_SITE_URL}
+        className="vitrine-btn vitrine-btn--primary"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Conheça o Gear Sales
+      </a>
+    </StatePage>
   )
 }

@@ -1,19 +1,57 @@
 /**
- * Normaliza número para link wa.me (apenas dígitos; adiciona 55 se parecer número BR local).
+ * Utilitários de WhatsApp da vitrine.
+ *
+ * Regras de validação:
+ *  - Aceita apenas dígitos válidos (entre 10 e 13 após DDI).
+ *  - Não duplica o DDI 55 quando o número já vem com ele.
+ *  - Remove parênteses, espaços, traços e qualquer caractere não numérico.
+ *  - Retorna `null` quando o número é inválido — para evitar renderizar
+ *    botões "quebrados" na vitrine pública.
+ */
+
+/** Número mínimo (10 dígitos: DDD + 8) e máximo (13 dígitos: 55 + DDD + 9) após normalização. */
+const MIN_DIGITS = 10
+const MAX_DIGITS = 13
+
+export function normalizeWhatsAppDigits(
+  whatsapp: string | null | undefined
+): string | null {
+  if (!whatsapp) {
+    return null
+  }
+
+  const digits = whatsapp.replace(/\D/g, "")
+  if (!digits) {
+    return null
+  }
+
+  const withCountry =
+    digits.length <= 11 && !digits.startsWith("55") ? `55${digits}` : digits
+
+  if (withCountry.length < MIN_DIGITS || withCountry.length > MAX_DIGITS) {
+    return null
+  }
+
+  return withCountry
+}
+
+/**
+ * Compatível com a API antiga (retorna string mesmo se inválido).
+ * Prefira `normalizeWhatsAppDigits` para validação.
  */
 export function normalizeWhatsAppNumber(whatsapp: string): string {
-  const digits = whatsapp.replace(/\D/g, "")
-  if (digits.length <= 11 && !digits.startsWith("55")) {
-    return `55${digits}`
-  }
-  return digits
+  return normalizeWhatsAppDigits(whatsapp) ?? ""
 }
 
 export function buildWhatsAppUrl(
-  whatsapp: string,
+  whatsapp: string | null | undefined,
   message?: string
-): string {
-  const number = normalizeWhatsAppNumber(whatsapp)
+): string | null {
+  const number = normalizeWhatsAppDigits(whatsapp)
+  if (!number) {
+    return null
+  }
+
   const base = `https://wa.me/${number}`
   if (!message?.trim()) {
     return base

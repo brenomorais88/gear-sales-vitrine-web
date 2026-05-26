@@ -11,6 +11,7 @@ import {
 } from "@/src/lib/whatsapp"
 import type { VitrineLoja } from "@/src/types/vitrine"
 import { formatLocation, getInitials } from "@/src/utils/format"
+import { getLojaDisplayName } from "@/src/utils/loja"
 
 interface VitrineHeaderProps {
   loja: VitrineLoja
@@ -24,7 +25,7 @@ const NAV_ITEMS = [
 export function VitrineHeader({ loja }: VitrineHeaderProps) {
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
-  const displayName = loja.nomePublico?.trim() || loja.nome
+  const displayName = getLojaDisplayName(loja)
   const location = formatLocation(loja.cidade, loja.estado)
   const whatsappHref = loja.whatsapp
     ? buildWhatsAppUrl(loja.whatsapp, buildLojaWhatsAppMessage(displayName))

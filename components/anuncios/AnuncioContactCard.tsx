@@ -5,6 +5,7 @@ import {
 import type { VitrineAnuncio } from "@/src/types/anuncio"
 import type { VitrineLoja } from "@/src/types/vitrine"
 import { formatCurrency } from "@/src/utils/format"
+import { getLojaDisplayName } from "@/src/utils/loja"
 import { buildTelHref } from "@/src/utils/phone"
 
 interface AnuncioContactCardProps {
@@ -13,7 +14,7 @@ interface AnuncioContactCardProps {
 }
 
 export function AnuncioContactCard({ anuncio, loja }: AnuncioContactCardProps) {
-  const displayName = loja.nomePublico?.trim() || loja.nome
+  const displayName = getLojaDisplayName(loja)
   const whatsappMessage = buildAnuncioWhatsAppMessage(anuncio.titulo, displayName)
   const whatsappHref = loja.whatsapp
     ? buildWhatsAppUrl(loja.whatsapp, whatsappMessage)

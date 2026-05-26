@@ -13,6 +13,7 @@ import {
 } from "@/src/lib/whatsapp"
 import type { VitrineAnuncio } from "@/src/types/anuncio"
 import type { VitrineLoja } from "@/src/types/vitrine"
+import { getLojaDisplayName } from "@/src/utils/loja"
 
 interface HomeAnunciosGridProps {
   loja: VitrineLoja
@@ -20,7 +21,7 @@ interface HomeAnunciosGridProps {
 }
 
 export function HomeAnunciosGrid({ loja, anuncios }: HomeAnunciosGridProps) {
-  const displayName = loja.nomePublico?.trim() || loja.nome
+  const displayName = getLojaDisplayName(loja)
   const {
     disponiveis,
     filtrados,
