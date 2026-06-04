@@ -3,6 +3,7 @@ import Link from "next/link"
 import { VitrineLayout } from "@/components/vitrine/VitrineLayout"
 import { VitrineAnuncioDetalhe } from "@/components/vitrine/VitrineAnuncioDetalheView"
 import { getVitrineForRequest } from "@/src/lib/get-vitrine"
+import { getVitrineApiDominio } from "@/src/lib/vitrine-domain"
 import { fetchVitrineAnuncioDetalhe } from "@/src/services/vitrineAnunciosService"
 import { VitrineAnunciosError } from "@/src/services/vitrineAnunciosService"
 
@@ -18,7 +19,7 @@ export async function generateMetadata(props: {
     const vitrine = await getVitrineForRequest()
     const anuncio = await fetchVitrineAnuncioDetalhe(
       params.id,
-      vitrine.enderecoPaginaPublica
+      getVitrineApiDominio(vitrine)
     )
 
     return {
@@ -88,7 +89,7 @@ export default async function AnuncioPage(props: {
     try {
       anuncio = await fetchVitrineAnuncioDetalhe(
         params.id,
-        vitrine!.enderecoPaginaPublica
+        getVitrineApiDominio(vitrine!)
       )
     } catch (error) {
       if (
