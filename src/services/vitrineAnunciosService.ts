@@ -42,8 +42,12 @@ export async function fetchVitrineAnuncios(params: {
 }): Promise<PublicVitrineAnuncioListResponse> {
   const baseUrl = getApiBaseUrl()
 
+  if (!params.dominio?.trim()) {
+    throw new VitrineAnunciosError("dominio é obrigatório para buscar anúncios")
+  }
+
   const queryParams = {
-    dominio: params.dominio,
+    dominio: params.dominio.trim(),
     page: params.page ?? 0,
     size: params.size ?? 12,
     ...(params.marcaId && { marcaId: params.marcaId }),

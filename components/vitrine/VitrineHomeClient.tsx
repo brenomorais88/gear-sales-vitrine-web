@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react"
 import { VitrineFilters } from "@/components/vitrine/VitrineFilters"
 import { VitrineAnunciosGrid } from "@/components/vitrine/VitrineAnunciosGrid"
+import { getVitrineApiDominio } from "@/src/lib/vitrine-domain"
 import { fetchVitrineAnuncios, fetchVitrineFiltros } from "@/src/services/vitrineAnunciosService"
 import type {
   VitrineLoja,
@@ -28,12 +29,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
   const [isLoadingAnuncios, setIsLoadingAnuncios] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const getDominio = useCallback(() => {
-    if (typeof window !== "undefined") {
-      return window.location.host
-    }
-    return process.env.NEXT_PUBLIC_VITRINE_HOST || ""
-  }, [])
+  const apiDominio = useCallback(() => getVitrineApiDominio(vitrine), [vitrine])
 
   // Carregar filtros
   useEffect(() => {
@@ -41,7 +37,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
       try {
         setIsLoadingFiltros(true)
         setError(null)
-        const dominio = getDominio()
+        const dominio = apiDominio()
         const dados = await fetchVitrineFiltros(dominio)
         setFiltros(dados)
       } catch {
@@ -52,7 +48,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
     }
 
     carregarFiltros()
-  }, [getDominio])
+  }, [apiDominio])
 
   // Carregar anúncios
   useEffect(() => {
@@ -60,7 +56,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
       try {
         setIsLoadingAnuncios(true)
         setError(null)
-        const dominio = getDominio()
+        const dominio = apiDominio()
         const dados = await fetchVitrineAnuncios({
           dominio,
           page,
@@ -78,7 +74,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
     }
 
     carregarAnuncios()
-  }, [page, sort, aplicadosFiltros, getDominio])
+  }, [page, sort, aplicadosFiltros, apiDominio])
 
   const handleFiltrosChange = useCallback(
     (novosFiltros: PublicVitrineAppliedFiltersResponse) => {
