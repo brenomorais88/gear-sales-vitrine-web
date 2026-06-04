@@ -91,3 +91,48 @@ export interface PublicVitrineFiltersResponse {
   sortOptions: PublicVitrineSortOptionResponse[]
 }
 
+// Tipos para Detalhes do Anúncio (V3)
+
+export interface PublicVitrineAnuncioFoto {
+  id: string
+  url: string
+  ordem?: number | null
+  principal?: boolean | null
+}
+
+export interface PublicVitrineLojaResumo {
+  id: string
+  nome: string
+  telefone?: string | null
+  whatsapp?: string | null
+  email?: string | null
+  cidade?: string | null
+  estado?: string | null
+  logoUrl?: string | null
+  corPrincipal?: string | null
+  urlPublica?: string | null
+}
+
+export interface PublicVitrineAnuncioDetalhe {
+  id: string
+  titulo: string
+  valorVenda: string
+  descricao?: string | null
+  marca: PublicVitrineSimpleOptionResponse
+  modelo: PublicVitrineSimpleOptionResponse
+  anoFabricacao?: string | null
+  anoModelo?: string | null
+  quilometragem?: string | null
+  cambio?: string | null
+  combustivel?: string | null
+  cor?: string | null
+  carroceria?: string | null
+  portas?: string | null
+  cidade?: string | null
+  estado?: string | null
+  fotos: PublicVitrineAnuncioFoto[]
+  loja: PublicVitrineLojaResumo
+  createdAt?: string | null
+  updatedAt?: string | null
+}
+
