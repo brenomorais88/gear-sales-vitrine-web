@@ -44,7 +44,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
         const dominio = getDominio()
         const dados = await fetchVitrineFiltros(dominio)
         setFiltros(dados)
-      } catch (err) {
+      } catch {
         setError("Não foi possível carregar os filtros")
       } finally {
         setIsLoadingFiltros(false)
@@ -69,7 +69,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
           ...aplicadosFiltros,
         })
         setAnuncios(dados)
-      } catch (err) {
+      } catch {
         setError("Não foi possível carregar os anúncios")
         setAnuncios(null)
       } finally {
