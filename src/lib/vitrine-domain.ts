@@ -1,4 +1,7 @@
+import type { VitrineLoja } from "@/src/types/vitrine"
+
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"])
+const PUBLIC_STORE_DOMAIN_SUFFIX = "gearsales.com.br"
 
 /**
  * Remove porta do host (ex.: localhost:3000 → localhost).
@@ -42,4 +45,26 @@ export function resolveVitrineDomain(host: string | null | undefined): string {
   }
 
   return normalized
+}
+
+/**
+ * Domínio da loja para chamadas à API de anúncios/filtros.
+ * Preferível ao host do browser em localhost (ex.: localhost:3000).
+ */
+export function getVitrineApiDominio(vitrine: VitrineLoja): string {
+  const fromUrl = vitrine.urlPublica?.trim()
+  if (fromUrl) {
+    try {
+      return new URL(fromUrl).hostname
+    } catch {
+      // segue para fallback por slug
+    }
+  }
+
+  const slug = vitrine.enderecoPaginaPublica?.trim()
+  if (slug) {
+    return `${slug}.${PUBLIC_STORE_DOMAIN_SUFFIX}`
+  }
+
+  throw new VitrineDomainError("VITRINE_DOMAIN_UNAVAILABLE")
 }

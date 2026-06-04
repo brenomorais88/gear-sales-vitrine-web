@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { VitrineError } from "@/components/vitrine/VitrineError"
 import { VitrineHome } from "@/components/vitrine/VitrineHome"
 import { VitrineNotFound } from "@/components/vitrine/VitrineNotFound"
+import { VitrineLayout } from "@/components/vitrine/VitrineLayout"
 import { getVitrineForRequest } from "@/src/lib/get-vitrine"
 import { VitrineDomainError } from "@/src/lib/vitrine-domain"
 import {
@@ -65,5 +66,9 @@ export default async function HomePage() {
     return <VitrineError />
   }
 
-  return <VitrineHome vitrine={vitrine} />
+  return (
+    <VitrineLayout vitrine={vitrine}>
+      <VitrineHome vitrine={vitrine} />
+    </VitrineLayout>
+  )
 }

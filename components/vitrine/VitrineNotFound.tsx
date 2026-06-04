@@ -1,10 +1,22 @@
+"use client"
+
+import { useEffect } from "react"
 import { VitrineStatePage } from "@/components/vitrine/VitrineStatePage"
 
 export function VitrineNotFound() {
+  useEffect(() => {
+    // Aguarda um breve momento antes de redirecionar para gearsales.com.br
+    const timer = setTimeout(() => {
+      window.location.href = "https://www.gearsales.com.br"
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <VitrineStatePage
       title="Vitrine não encontrada"
-      description="Verifique se o endereço está correto ou se a loja ainda está ativa."
+      description="Você será redirecionado para Gear Sales em alguns segundos..."
     />
   )
 }

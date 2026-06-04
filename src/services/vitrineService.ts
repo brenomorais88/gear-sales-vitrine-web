@@ -17,6 +17,7 @@ export class VitrineUnavailableError extends Error {
 
 /**
  * Busca dados públicos da loja pelo domínio completo.
+ * Cache: Os dados são cacheados por ~5 minutos (300 segundos) entre requisições.
  */
 export async function buscarVitrinePorDominio(
   dominio: string
@@ -32,7 +33,7 @@ export async function buscarVitrinePorDominio(
       headers: {
         Accept: "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 300 },
     })
   } catch {
     throw new VitrineUnavailableError()
