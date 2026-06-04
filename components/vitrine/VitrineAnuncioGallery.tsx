@@ -12,13 +12,15 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
   // Encontrar foto principal ou usar primeira
   const fotoInicial = fotos.find((f) => f.principal) || fotos[0]
   const [fotoAtual, setFotoAtual] = useState<PublicVitrineAnuncioFoto | undefined>(fotoInicial)
+  const [erroImage, setErroImage] = useState<string | null>(null)
 
   if (!fotos || fotos.length === 0) {
     return (
       <div className="vitrine-gallery">
         <div className="vitrine-gallery__main-placeholder">
           <div className="vitrine-gallery__placeholder-content">
-            <span>Foto indisponível</span>
+            <div className="vitrine-gallery__placeholder-icon">📷</div>
+            <span>Fotos não disponíveis</span>
           </div>
         </div>
       </div>
@@ -32,6 +34,7 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
     const idx = fotos.findIndex((f) => f.id === fotoAtualData.id)
     if (idx > 0) {
       setFotoAtual(fotos[idx - 1])
+      setErroImage(null)
     }
   }
 
@@ -39,20 +42,36 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
     const idx = fotos.findIndex((f) => f.id === fotoAtualData.id)
     if (idx < fotos.length - 1) {
       setFotoAtual(fotos[idx + 1])
+      setErroImage(null)
     }
+  }
+
+  const handleImageError = () => {
+    setErroImage(fotoAtualData.id)
   }
 
   return (
     <div className="vitrine-gallery">
       <div className="vitrine-gallery__main">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={fotoAtualData.url}
-          alt={titulo}
-          className="vitrine-gallery__main-image"
-        />
+        {erroImage === fotoAtualData.id ? (
+          <div className="vitrine-gallery__main-placeholder">
+            <div className="vitrine-gallery__placeholder-content">
+              <div className="vitrine-gallery__placeholder-icon">⚠️</div>
+              <span>Foto indisponível</span>
+            </div>
+          </div>
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={fotoAtualData.url}
+            alt={`${titulo} - Foto ${indiceAtual}`}
+            className="vitrine-gallery__main-image"
+            onError={handleImageError}
+          />
+        )}
+        
         <div className="vitrine-gallery__counter">
-          {indiceAtual} de {fotos.length}
+          {indiceAtual} / {fotos.length}
         </div>
 
         {fotos.length > 1 && (
@@ -62,6 +81,7 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
               disabled={indiceAtual === 1}
               className="vitrine-gallery__button vitrine-gallery__button--prev"
               aria-label="Foto anterior"
+              title="Foto anterior"
             >
               ‹
             </button>
@@ -70,6 +90,7 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
               disabled={indiceAtual === fotos.length}
               className="vitrine-gallery__button vitrine-gallery__button--next"
               aria-label="Próxima foto"
+              title="Próxima foto"
             >
               ›
             </button>
@@ -82,7 +103,10 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
           {fotos.map((foto, idx) => (
             <button
               key={foto.id}
-              onClick={() => setFotoAtual(foto)}
+              onClick={() => {
+                setFotoAtual(foto)
+                setErroImage(null)
+              }}
               className={`vitrine-gallery__thumbnail ${
                 fotoAtualData.id === foto.id
                   ? "vitrine-gallery__thumbnail--active"
@@ -90,9 +114,10 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
               }`}
               aria-label={`Foto ${idx + 1}`}
               aria-current={fotoAtualData.id === foto.id}
+              title={`Foto ${idx + 1}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={foto.url} alt={`${titulo} - Foto ${idx + 1}`} />
+              <img src={foto.url} alt={`${titulo} - Miniatura ${idx + 1}`} />
             </button>
           ))}
         </div>
