@@ -2,6 +2,7 @@ import { getApiBaseUrl } from "@/src/lib/api-config"
 import type {
   PublicVitrineAnuncioListResponse,
   PublicVitrineFiltersResponse,
+  PublicVitrineAnuncioDetalhe,
 } from "@/src/types/vitrine"
 
 export class VitrineAnunciosError extends Error {
@@ -122,4 +123,60 @@ export async function fetchVitrineFiltros(
   }
 
   return response.json() as Promise<PublicVitrineFiltersResponse>
+}
+
+/**
+ * Busca detalhes de um anúncio específico
+ */
+export async function fetchVitrineAnuncioDetalhe(
+  anuncioId: string,
+  dominio: string
+): Promise<PublicVitrineAnuncioDetalhe> {
+  const baseUrl = getApiBaseUrl()
+
+  if (!anuncioId?.trim()) {
+    throw new VitrineAnunciosError("anuncioId é obrigatório")
+  }
+
+  if (!dominio?.trim()) {
+    throw new VitrineAnunciosError("dominio é obrigatório")
+  }
+
+  const queryParams = new URLSearchParams({
+    dominio: dominio.trim(),
+  })
+
+  const url = `${baseUrl}/vitrine/anuncios/${encodeURIComponent(anuncioId)}?${queryParams.toString()}`
+
+  let response: Response
+
+  try {
+    response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+      next: { revalidate: 300 },
+    })
+  } catch (error) {
+    throw new VitrineAnunciosError(
+      `Erro ao buscar anúncio: ${error instanceof Error ? error.message : String(error)}`
+    )
+  }
+
+  if (response.status === 404) {
+    throw new VitrineAnunciosError("Anúncio não encontrado")
+  }
+
+  if (response.status === 400) {
+    throw new VitrineAnunciosError("Parâmetros inválidos")
+  }
+
+  if (!response.ok) {
+    throw new VitrineAnunciosError(
+      `Erro ao buscar anúncio. Status: ${response.status}`
+    )
+  }
+
+  return response.json() as Promise<PublicVitrineAnuncioDetalhe>
 }
