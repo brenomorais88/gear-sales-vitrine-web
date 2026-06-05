@@ -2,6 +2,7 @@ import type { CSSProperties } from "react"
 import Link from "next/link"
 
 import { VitrineHorarioFuncionamento } from "@/components/vitrine/VitrineHorarioFuncionamento"
+import { VitrineSobreLeadCta } from "@/components/vitrine/VitrineSobreLeadCta"
 import {
   buildVitrineWhatsAppLink,
   formatVitrineLocation,
@@ -12,13 +13,14 @@ import type { VitrineLoja } from "@/src/types/vitrine"
 
 interface VitrineSobreProps {
   vitrine: VitrineLoja
+  dominio: string
 }
 
 function getDescricaoInstitucionalFallback(nome: string): string {
   return `A ${nome} disponibiliza seus veículos em uma vitrine online para facilitar sua consulta e contato.`
 }
 
-export function VitrineSobre({ vitrine }: VitrineSobreProps) {
+export function VitrineSobre({ vitrine, dominio }: VitrineSobreProps) {
   const theme = getVitrineTheme(vitrine.corPrincipal)
   const localizacao = formatVitrineLocation(vitrine.cidade, vitrine.estado)
   const descricaoTrim = vitrine.descricao?.trim()
@@ -94,6 +96,12 @@ export function VitrineSobre({ vitrine }: VitrineSobreProps) {
             <Link href="/#estoque" className="vitrine-sobre-btn vitrine-sobre-btn--primary">
               Ver veículos
             </Link>
+            <VitrineSobreLeadCta
+              dominio={dominio}
+              lojaNome={vitrine.nome}
+              whatsapp={vitrine.whatsapp}
+              variant="secondary"
+            />
             {whatsappLink && (
               <a
                 href={whatsappLink}
@@ -146,8 +154,35 @@ export function VitrineSobre({ vitrine }: VitrineSobreProps) {
             )}
           </section>
 
+          {!possuiContato && (
+            <section
+              id="contato"
+              className="vitrine-sobre-card"
+              aria-labelledby="vitrine-sobre-message-title"
+            >
+              <h2 id="vitrine-sobre-message-title" className="vitrine-sobre-card__title">
+                Fale com a loja
+              </h2>
+              <p className="vitrine-sobre-card__text">
+                Envie sua mensagem e aguarde o retorno da {vitrine.nome}.
+              </p>
+              <div className="vitrine-sobre-card__actions">
+                <VitrineSobreLeadCta
+                  dominio={dominio}
+                  lojaNome={vitrine.nome}
+                  whatsapp={vitrine.whatsapp}
+                  variant="block-accent"
+                />
+              </div>
+            </section>
+          )}
+
           {possuiContato && (
-            <section className="vitrine-sobre-card" aria-labelledby="vitrine-sobre-contact-title">
+            <section
+              id="contato"
+              className="vitrine-sobre-card"
+              aria-labelledby="vitrine-sobre-contact-title"
+            >
               <h2 id="vitrine-sobre-contact-title" className="vitrine-sobre-card__title">
                 Contato
               </h2>
@@ -191,17 +226,25 @@ export function VitrineSobre({ vitrine }: VitrineSobreProps) {
                   </li>
                 )}
               </ul>
-              {whatsappLink && (
-                <a
-                  href={whatsappLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="vitrine-sobre-btn vitrine-sobre-btn--whatsapp vitrine-sobre-btn--block"
-                  aria-label={`Falar no WhatsApp com ${vitrine.nome}`}
-                >
-                  Falar no WhatsApp
-                </a>
-              )}
+              <div className="vitrine-sobre-card__actions">
+                <VitrineSobreLeadCta
+                  dominio={dominio}
+                  lojaNome={vitrine.nome}
+                  whatsapp={vitrine.whatsapp}
+                  variant="block-accent"
+                />
+                {whatsappLink && (
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="vitrine-sobre-btn vitrine-sobre-btn--whatsapp vitrine-sobre-btn--block"
+                    aria-label={`Falar no WhatsApp com ${vitrine.nome}`}
+                  >
+                    Falar no WhatsApp
+                  </a>
+                )}
+              </div>
             </section>
           )}
 
@@ -248,6 +291,11 @@ export function VitrineSobre({ vitrine }: VitrineSobreProps) {
           <Link href="/#estoque" className="vitrine-sobre-btn vitrine-sobre-btn--accent">
             Ver veículos
           </Link>
+          <VitrineSobreLeadCta
+            dominio={dominio}
+            lojaNome={vitrine.nome}
+            whatsapp={vitrine.whatsapp}
+          />
           {whatsappLink && (
             <a
               href={whatsappLink}

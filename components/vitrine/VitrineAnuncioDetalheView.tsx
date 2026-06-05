@@ -1,12 +1,16 @@
 "use client"
 
 import Link from "next/link"
-import type { PublicVitrineAnuncioDetalhe } from "@/src/types/vitrine"
+import { useState } from "react"
+
 import { VitrineAnuncioGallery } from "@/components/vitrine/VitrineAnuncioGallery"
+import { VitrineLeadModal } from "@/components/vitrine/VitrineLeadModal"
 import { VitrineLojaContactCard } from "@/components/vitrine/VitrineLojaContactCard"
+import type { PublicVitrineAnuncioDetalhe, VitrineLeadModalMode } from "@/src/types/vitrine"
 
 interface VitrineAnuncioDetalheProps {
   anuncio: PublicVitrineAnuncioDetalhe
+  dominio: string
 }
 
 function formatarValor(valor: string): string {
@@ -43,16 +47,18 @@ function formatarAno(anoFab: string | null | undefined, anoMod: string | null | 
   return null
 }
 
-export function VitrineAnuncioDetalhe({ anuncio }: VitrineAnuncioDetalheProps) {
+export function VitrineAnuncioDetalhe({ anuncio, dominio }: VitrineAnuncioDetalheProps) {
+  const [leadModalMode, setLeadModalMode] = useState<VitrineLeadModalMode | null>(null)
+
   const localizacao =
     anuncio.cidade && anuncio.estado
       ? `${anuncio.cidade}, ${anuncio.estado}`
       : null
   const quilometragem = formatarQuilometragem(anuncio.quilometragem)
   const ano = formatarAno(anuncio.anoFabricacao, anuncio.anoModelo)
-  const whatsappLink = anuncio.loja.whatsapp
+  const whatsappInteresseLink = anuncio.loja.whatsapp
     ? `https://wa.me/${anuncio.loja.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-        `Olá, tenho interesse em simular o financiamento do veículo ${anuncio.titulo} anunciado na vitrine da ${anuncio.loja.nome}.`
+        `Olá, tenho interesse no veículo ${anuncio.titulo} anunciado na vitrine da ${anuncio.loja.nome}. Ele ainda está disponível?`
       )}`
     : null
 
@@ -79,9 +85,10 @@ export function VitrineAnuncioDetalhe({ anuncio }: VitrineAnuncioDetalheProps) {
           </div>
 
           {localizacao && (
-            <div className="vitrine-anuncio-detalhe__localizacao">
-              📍 {localizacao}
-            </div>
+            <p className="vitrine-anuncio-detalhe__localizacao">
+              <span className="vitrine-anuncio-detalhe__localizacao-label">Localização:</span>{" "}
+              {localizacao}
+            </p>
           )}
 
           <div className="vitrine-anuncio-detalhe__specs">
@@ -122,30 +129,48 @@ export function VitrineAnuncioDetalhe({ anuncio }: VitrineAnuncioDetalheProps) {
           </div>
 
           <div className="vitrine-anuncio-detalhe__actions">
-            {anuncio.loja.whatsapp && (
+            <button
+              type="button"
+              className="vitrine-anuncio-detalhe__btn vitrine-anuncio-detalhe__btn--primary"
+              onClick={() => setLeadModalMode("interest")}
+              aria-haspopup="dialog"
+            >
+              Tenho interesse
+            </button>
+
+            <button
+              type="button"
+              className="vitrine-anuncio-detalhe__btn vitrine-anuncio-detalhe__btn--secondary"
+              onClick={() => setLeadModalMode("financing")}
+              aria-haspopup="dialog"
+            >
+              Simular financiamento
+            </button>
+
+            {whatsappInteresseLink && (
               <a
-                href={`https://wa.me/${anuncio.loja.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-                  `Olá, tenho interesse no veículo ${anuncio.titulo} anunciado na vitrine da ${anuncio.loja.nome}. Ele ainda está disponível?`
-                )}`}
+                href={whatsappInteresseLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="vitrine-anuncio-detalhe__btn vitrine-anuncio-detalhe__btn--primary"
+                className="vitrine-anuncio-detalhe__btn vitrine-anuncio-detalhe__btn--whatsapp"
               >
                 Falar no WhatsApp
               </a>
             )}
-
-            {whatsappLink && (
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="vitrine-anuncio-detalhe__btn vitrine-anuncio-detalhe__btn--secondary"
-              >
-                Simular financiamento
-              </a>
-            )}
           </div>
+
+          {leadModalMode && (
+            <VitrineLeadModal
+              open={Boolean(leadModalMode)}
+              mode={leadModalMode}
+              dominio={dominio}
+              anuncioId={anuncio.id}
+              anuncioTitulo={anuncio.titulo}
+              lojaNome={anuncio.loja.nome}
+              whatsapp={anuncio.loja.whatsapp}
+              onClose={() => setLeadModalMode(null)}
+            />
+          )}
 
           {anuncio.descricao && (
             <section className="vitrine-anuncio-detalhe__descricao">

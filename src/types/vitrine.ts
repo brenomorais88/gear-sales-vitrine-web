@@ -150,3 +150,34 @@ export interface PublicVitrineAnuncioDetalhe {
   updatedAt?: string | null
 }
 
+// Tipos para Captação de Leads (V4)
+
+export type PublicVitrineLeadTipo =
+  | "INTERESSE_ANUNCIO"
+  | "SIMULACAO_FINANCIAMENTO"
+  | "CONTATO_GERAL"
+
+export type PublicVitrineLeadRequest = {
+  dominio: string
+  tipo: PublicVitrineLeadTipo
+  anuncioId?: string | null
+  nome: string
+  telefone: string
+  email?: string | null
+  mensagem?: string | null
+  valorEntrada?: string | null
+  quantidadeParcelas?: number | null
+}
+
+export type PublicVitrineLeadResponse = {
+  id: string
+  message: string
+}
+
+export type PublicVitrineLeadApiError = {
+  message?: string
+  code?: string
+}
+
+export type VitrineLeadModalMode = "interest" | "financing" | "general"
+

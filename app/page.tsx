@@ -6,22 +6,22 @@ import { VitrineNotFound } from "@/components/vitrine/VitrineNotFound"
 import { VitrineLayout } from "@/components/vitrine/VitrineLayout"
 import { getVitrineForRequest } from "@/src/lib/get-vitrine"
 import { loadVitrinePage } from "@/src/lib/load-vitrine-page"
+import {
+  buildHomeSeoMetadata,
+  buildVitrineSeoFallbackMetadata,
+  getRequestOrigin,
+} from "@/src/lib/vitrine-seo"
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const vitrine = await getVitrineForRequest()
+    const [vitrine, requestOrigin] = await Promise.all([
+      getVitrineForRequest(),
+      getRequestOrigin(),
+    ])
 
-    return {
-      title: vitrine.nome,
-      description:
-        vitrine.descricao?.trim() ||
-        `Vitrine pública da loja ${vitrine.nome} no Gear Sales.`,
-    }
+    return buildHomeSeoMetadata(vitrine, requestOrigin)
   } catch {
-    return {
-      title: "Gear Sales Vitrine",
-      description: "Vitrine pública de lojas no Gear Sales.",
-    }
+    return buildVitrineSeoFallbackMetadata("home")
   }
 }
 
@@ -37,7 +37,7 @@ export default async function HomePage() {
   }
 
   return (
-    <VitrineLayout vitrine={vitrine}>
+    <VitrineLayout vitrine={vitrine} fullWidth>
       <VitrineHome vitrine={vitrine} />
     </VitrineLayout>
   )

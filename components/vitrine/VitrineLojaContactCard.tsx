@@ -1,19 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import type { PublicVitrineLojaResumo } from "@/src/types/vitrine"
+import { getVitrineInitials } from "@/src/lib/vitrine-display"
 
 interface VitrineLojaContactCardProps {
   loja: PublicVitrineLojaResumo
   anuncioTitulo: string
-}
-
-function getInitials(nome: string): string {
-  return nome
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("")
 }
 
 function formatarWhatsAppLink(whatsapp: string, titulo: string, nomeLoja: string): string {
@@ -28,22 +21,30 @@ export function VitrineLojaContactCard({
   loja,
   anuncioTitulo,
 }: VitrineLojaContactCardProps) {
+  const [logoError, setLogoError] = useState(false)
   const localizacao =
     loja.cidade && loja.estado ? `${loja.cidade}, ${loja.estado}` : null
   const whatsappLink = loja.whatsapp
     ? formatarWhatsAppLink(loja.whatsapp, anuncioTitulo, loja.nome)
     : null
-  const iniciais = getInitials(loja.nome)
+  const iniciais = getVitrineInitials(loja.nome)
+  const possuiContato = Boolean(loja.whatsapp || loja.telefone || loja.email)
 
   return (
     <div className="vitrine-loja-card">
       <div className="vitrine-loja-card__header">
         <div className="vitrine-loja-card__logo">
-          {loja.logoUrl ? (
+          {loja.logoUrl && !logoError ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={loja.logoUrl} alt={`Logo ${loja.nome}`} />
+            <img
+              src={loja.logoUrl}
+              alt=""
+              onError={() => setLogoError(true)}
+            />
           ) : (
-            <span className="vitrine-loja-card__logo-initials">{iniciais}</span>
+            <span className="vitrine-loja-card__logo-initials" aria-hidden>
+              {iniciais}
+            </span>
           )}
         </div>
         <div className="vitrine-loja-card__info">
@@ -54,39 +55,41 @@ export function VitrineLojaContactCard({
         </div>
       </div>
 
-      <div className="vitrine-loja-card__contacts">
-        {whatsappLink && (
-          <a
-            href={whatsappLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="vitrine-loja-card__contact-link"
-          >
-            <span className="vitrine-loja-card__contact-label">WhatsApp:</span>
-            <span className="vitrine-loja-card__contact-value">{loja.whatsapp}</span>
-          </a>
-        )}
+      {possuiContato && (
+        <div className="vitrine-loja-card__contacts">
+          {whatsappLink && (
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="vitrine-loja-card__contact-link"
+            >
+              <span className="vitrine-loja-card__contact-label">WhatsApp</span>
+              <span className="vitrine-loja-card__contact-value">{loja.whatsapp}</span>
+            </a>
+          )}
 
-        {loja.telefone && (
-          <a
-            href={`tel:${loja.telefone.replace(/\D/g, "")}`}
-            className="vitrine-loja-card__contact-link"
-          >
-            <span className="vitrine-loja-card__contact-label">Telefone:</span>
-            <span className="vitrine-loja-card__contact-value">{loja.telefone}</span>
-          </a>
-        )}
+          {loja.telefone && (
+            <a
+              href={`tel:${loja.telefone.replace(/\D/g, "")}`}
+              className="vitrine-loja-card__contact-link"
+            >
+              <span className="vitrine-loja-card__contact-label">Telefone</span>
+              <span className="vitrine-loja-card__contact-value">{loja.telefone}</span>
+            </a>
+          )}
 
-        {loja.email && (
-          <a
-            href={`mailto:${loja.email}`}
-            className="vitrine-loja-card__contact-link"
-          >
-            <span className="vitrine-loja-card__contact-label">E-mail:</span>
-            <span className="vitrine-loja-card__contact-value">{loja.email}</span>
-          </a>
-        )}
-      </div>
+          {loja.email && (
+            <a
+              href={`mailto:${loja.email}`}
+              className="vitrine-loja-card__contact-link"
+            >
+              <span className="vitrine-loja-card__contact-label">E-mail</span>
+              <span className="vitrine-loja-card__contact-value">{loja.email}</span>
+            </a>
+          )}
+        </div>
+      )}
 
       <div className="vitrine-loja-card__actions">
         {whatsappLink && (

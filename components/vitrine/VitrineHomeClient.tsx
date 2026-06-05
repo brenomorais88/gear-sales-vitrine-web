@@ -28,6 +28,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
   const [isLoadingFiltros, setIsLoadingFiltros] = useState(true)
   const [isLoadingAnuncios, setIsLoadingAnuncios] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [filtersResetKey, setFiltersResetKey] = useState(0)
 
   const apiDominio = useCallback(() => getVitrineApiDominio(vitrine), [vitrine])
 
@@ -119,10 +120,12 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
   return (
     <div className="vitrine-home-client">
       {/* Hero Section */}
-      <section className="vitrine-hero">
+      <section className="vitrine-hero" aria-labelledby="vitrine-home-title">
         <div className="vitrine-hero__container">
           <div className="vitrine-hero__content">
-            <h1 className="vitrine-hero__title">{vitrine.nome}</h1>
+            <h1 id="vitrine-home-title" className="vitrine-hero__title">
+              {vitrine.nome}
+            </h1>
             <p className="vitrine-hero__description">{descricao}</p>
             {localizacao && (
               <p className="vitrine-hero__location">{localizacao}</p>
@@ -156,6 +159,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
             {/* Sidebar com Filtros */}
             <aside className="vitrine-anuncios-sidebar">
               <VitrineFilters
+                key={filtersResetKey}
                 filtros={filtros}
                 aplicados={aplicadosFiltros}
                 onFiltersChange={handleFiltrosChange}
@@ -194,6 +198,7 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
                       setPage(0)
                       setAplicadosFiltros({})
                       setSort("mais_recentes")
+                      setFiltersResetKey((key) => key + 1)
                     }}
                     className="vitrine-error-banner__btn"
                   >

@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react"
+import Link from "next/link"
 
 import type { VitrineLoja } from "@/src/types/vitrine"
 import { getVitrineTheme } from "@/src/lib/vitrine-theme"
@@ -15,6 +16,7 @@ function formatLocation(cidade?: string | null, estado?: string | null): string 
 export function VitrineFooter({ vitrine }: VitrineFooterProps) {
   const theme = getVitrineTheme(vitrine.corPrincipal)
   const location = formatLocation(vitrine.cidade, vitrine.estado)
+  const possuiContato = Boolean(vitrine.telefone || vitrine.whatsapp || vitrine.email)
 
   return (
     <footer
@@ -22,18 +24,19 @@ export function VitrineFooter({ vitrine }: VitrineFooterProps) {
       style={
         {
           "--vitrine-primary": theme.primaryColor,
+          "--vitrine-header-text": theme.textColor,
         } as CSSProperties
       }
     >
       <div className="vitrine-footer-custom__container">
         <div className="vitrine-footer-custom__section">
-          <h3 className="vitrine-footer-custom__title">{vitrine.nome}</h3>
+          <h2 className="vitrine-footer-custom__title">{vitrine.nome}</h2>
           {location && (
             <p className="vitrine-footer-custom__text">{location}</p>
           )}
         </div>
 
-        {(vitrine.telefone || vitrine.whatsapp || vitrine.email) && (
+        {possuiContato && (
           <div className="vitrine-footer-custom__section">
             <h3 className="vitrine-footer-custom__subtitle">Contato</h3>
             <ul className="vitrine-footer-custom__list">
@@ -65,13 +68,16 @@ export function VitrineFooter({ vitrine }: VitrineFooterProps) {
         )}
 
         <div className="vitrine-footer-custom__section">
-          <h3 className="vitrine-footer-custom__subtitle">Links Úteis</h3>
+          <h3 className="vitrine-footer-custom__subtitle">Navegação</h3>
           <ul className="vitrine-footer-custom__list">
             <li>
-              <a href="/termos">Termos de Uso</a>
+              <Link href="/#inicio">Início</Link>
             </li>
             <li>
-              <a href="/privacidade">Política de Privacidade</a>
+              <Link href="/#estoque">Estoque</Link>
+            </li>
+            <li>
+              <Link href="/sobre">Sobre</Link>
             </li>
           </ul>
         </div>

@@ -1,15 +1,13 @@
 "use client"
 
 import Link from "next/link"
+import { useState } from "react"
 import type { PublicVitrineAnuncioCardResponse } from "@/src/types/vitrine"
 
 interface VitrineAnuncioCardProps {
   anuncio: PublicVitrineAnuncioCardResponse
 }
 
-/**
- * Formata um valor em reais
- */
 function formatarValor(valor: string | null | undefined): string {
   if (!valor) return "Consulte"
 
@@ -28,9 +26,6 @@ function formatarValor(valor: string | null | undefined): string {
   }
 }
 
-/**
- * Formata quilometragem com separadores de milhares
- */
 function formatarQuilometragem(km: string | null | undefined): string | null {
   if (!km) return null
 
@@ -45,6 +40,7 @@ function formatarQuilometragem(km: string | null | undefined): string | null {
 }
 
 export function VitrineAnuncioCard({ anuncio }: VitrineAnuncioCardProps) {
+  const [imageError, setImageError] = useState(false)
   const ano = anuncio.anoModelo || anuncio.anoFabricacao
   const quilometragem = formatarQuilometragem(anuncio.quilometragem)
   const localizacao =
@@ -52,21 +48,32 @@ export function VitrineAnuncioCard({ anuncio }: VitrineAnuncioCardProps) {
       ? `${anuncio.cidade}, ${anuncio.estado}`
       : null
 
+  const chips = [
+    ano && { label: "Ano", value: ano },
+    quilometragem && { label: "KM", value: quilometragem },
+    anuncio.cambio && { label: "Câmbio", value: anuncio.cambio },
+    anuncio.combustivel && { label: "Comb.", value: anuncio.combustivel },
+  ].filter(Boolean) as Array<{ label: string; value: string }>
+
   return (
     <Link
       href={`/anuncios/${anuncio.id}`}
       className="vitrine-anuncio-card"
     >
       <div className="vitrine-anuncio-card__image-container">
-        {anuncio.fotoPrincipalUrl ? (
+        {anuncio.fotoPrincipalUrl && !imageError ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={anuncio.fotoPrincipalUrl}
             alt={anuncio.titulo}
             className="vitrine-anuncio-card__image"
+            loading="lazy"
+            decoding="async"
+            onError={() => setImageError(true)}
           />
         ) : (
-          <div className="vitrine-anuncio-card__image-placeholder">
+          <div className="vitrine-anuncio-card__image-placeholder" aria-hidden>
+            <span className="vitrine-anuncio-card__placeholder-icon">🚗</span>
             <span>Foto indisponível</span>
           </div>
         )}
@@ -81,58 +88,28 @@ export function VitrineAnuncioCard({ anuncio }: VitrineAnuncioCardProps) {
       <div className="vitrine-anuncio-card__content">
         <div className="vitrine-anuncio-card__header">
           <h3 className="vitrine-anuncio-card__title">{anuncio.titulo}</h3>
+          <p className="vitrine-anuncio-card__subtitle">
+            {anuncio.marca.nome} {anuncio.modelo.nome}
+          </p>
           <div className="vitrine-anuncio-card__price">
             {formatarValor(anuncio.valorVenda)}
           </div>
         </div>
 
-        <div className="vitrine-anuncio-card__details">
-          <div className="vitrine-anuncio-card__detail-row">
-            <span className="vitrine-anuncio-card__label">Marca/Modelo:</span>
-            <span className="vitrine-anuncio-card__value">
-              {anuncio.marca.nome} {anuncio.modelo.nome}
-            </span>
-          </div>
+        {chips.length > 0 && (
+          <ul className="vitrine-anuncio-card__chips" aria-label="Características">
+            {chips.map((chip) => (
+              <li key={`${chip.label}-${chip.value}`} className="vitrine-anuncio-card__chip">
+                <span className="vitrine-anuncio-card__chip-label">{chip.label}</span>
+                <span className="vitrine-anuncio-card__chip-value">{chip.value}</span>
+              </li>
+            ))}
+          </ul>
+        )}
 
-          {ano && (
-            <div className="vitrine-anuncio-card__detail-row">
-              <span className="vitrine-anuncio-card__label">Ano:</span>
-              <span className="vitrine-anuncio-card__value">{ano}</span>
-            </div>
-          )}
-
-          {quilometragem && (
-            <div className="vitrine-anuncio-card__detail-row">
-              <span className="vitrine-anuncio-card__label">KM:</span>
-              <span className="vitrine-anuncio-card__value">{quilometragem}</span>
-            </div>
-          )}
-
-          {anuncio.cambio && (
-            <div className="vitrine-anuncio-card__detail-row">
-              <span className="vitrine-anuncio-card__label">Câmbio:</span>
-              <span className="vitrine-anuncio-card__value">
-                {anuncio.cambio}
-              </span>
-            </div>
-          )}
-
-          {anuncio.combustivel && (
-            <div className="vitrine-anuncio-card__detail-row">
-              <span className="vitrine-anuncio-card__label">Combustível:</span>
-              <span className="vitrine-anuncio-card__value">
-                {anuncio.combustivel}
-              </span>
-            </div>
-          )}
-
-          {localizacao && (
-            <div className="vitrine-anuncio-card__detail-row">
-              <span className="vitrine-anuncio-card__label">Localização:</span>
-              <span className="vitrine-anuncio-card__value">{localizacao}</span>
-            </div>
-          )}
-        </div>
+        {localizacao && (
+          <p className="vitrine-anuncio-card__location">{localizacao}</p>
+        )}
 
         <div className="vitrine-anuncio-card__footer">
           <span className="vitrine-anuncio-card__cta">Ver detalhes</span>

@@ -18,8 +18,10 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
     return (
       <div className="vitrine-gallery">
         <div className="vitrine-gallery__main-placeholder">
-          <div className="vitrine-gallery__placeholder-content">
-            <div className="vitrine-gallery__placeholder-icon">📷</div>
+            <div className="vitrine-gallery__placeholder-content">
+            <span className="vitrine-gallery__placeholder-icon" aria-hidden>
+              🚗
+            </span>
             <span>Fotos não disponíveis</span>
           </div>
         </div>
@@ -56,7 +58,9 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
         {erroImage === fotoAtualData.id ? (
           <div className="vitrine-gallery__main-placeholder">
             <div className="vitrine-gallery__placeholder-content">
-              <div className="vitrine-gallery__placeholder-icon">⚠️</div>
+              <span className="vitrine-gallery__placeholder-icon" aria-hidden>
+                🚗
+              </span>
               <span>Foto indisponível</span>
             </div>
           </div>
@@ -66,6 +70,8 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
             src={fotoAtualData.url}
             alt={`${titulo} - Foto ${indiceAtual}`}
             className="vitrine-gallery__main-image"
+            loading="eager"
+            decoding="async"
             onError={handleImageError}
           />
         )}
@@ -117,7 +123,12 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
               title={`Foto ${idx + 1}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={foto.url} alt={`${titulo} - Miniatura ${idx + 1}`} />
+              <img
+                src={foto.url}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
             </button>
           ))}
         </div>

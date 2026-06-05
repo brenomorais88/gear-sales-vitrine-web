@@ -13,6 +13,16 @@ interface VitrineFiltersProps {
   isLoading: boolean
 }
 
+function countActiveFilters(
+  aplicados: PublicVitrineAppliedFiltersResponse | null
+): number {
+  if (!aplicados) {
+    return 0
+  }
+
+  return Object.values(aplicados).filter((value) => value != null && value !== "").length
+}
+
 export function VitrineFilters({
   filtros,
   aplicados,
@@ -28,21 +38,37 @@ export function VitrineFilters({
   const [kmMax, setKmMax] = useState(aplicados?.kmMax || "")
   const [valorMin, setValorMin] = useState(aplicados?.valorMin || "")
   const [valorMax, setValorMax] = useState(aplicados?.valorMax || "")
+  const [mobileOpen, setMobileOpen] = useState(false)
 
-  // Filtrar modelos baseado na marca selecionada (memoizado)
+  const activeCount = useMemo(() => countActiveFilters(aplicados), [aplicados])
+
   const modelosFiltrados = useMemo(() => {
     return marcaId
       ? filtros?.modelos.filter((m) => m.marcaId === marcaId) ?? []
       : filtros?.modelos ?? []
   }, [marcaId, filtros?.modelos])
 
-  // Se trocar marca e o modelo selecionado não pertence à nova marca, limpar modelo
-  if (marcaId && modeloId) {
-    const modeloPertence = modelosFiltrados.some((m) => m.id === modeloId)
-    if (!modeloPertence) {
-      setModeloId("")
-    }
-  }
+  const handleMarcaChange = useCallback(
+    (novaMarca: string) => {
+      setMarcaId(novaMarca)
+
+      if (!novaMarca) {
+        setModeloId("")
+        return
+      }
+
+      if (modeloId) {
+        const modeloPertence = filtros?.modelos.some(
+          (modelo) => modelo.id === modeloId && modelo.marcaId === novaMarca
+        )
+
+        if (!modeloPertence) {
+          setModeloId("")
+        }
+      }
+    },
+    [filtros?.modelos, modeloId]
+  )
 
   const handleAplicarFiltros = useCallback(() => {
     const novosFiltros: PublicVitrineAppliedFiltersResponse = {}
@@ -58,6 +84,7 @@ export function VitrineFilters({
     if (valorMax) novosFiltros.valorMax = valorMax
 
     onFiltersChange(novosFiltros)
+    setMobileOpen(false)
   }, [texto, marcaId, modeloId, anoMin, anoMax, kmMin, kmMax, valorMin, valorMax, onFiltersChange])
 
   const handleLimparFiltros = useCallback(() => {
@@ -71,6 +98,7 @@ export function VitrineFilters({
     setValorMin("")
     setValorMax("")
     onFiltersChange({})
+    setMobileOpen(false)
   }, [onFiltersChange])
 
   if (!filtros) {
@@ -78,20 +106,41 @@ export function VitrineFilters({
   }
 
   return (
-    <div className="vitrine-filters">
+    <div className={`vitrine-filters${mobileOpen ? " vitrine-filters--open" : ""}`}>
       <div className="vitrine-filters__header">
-        <h3>Filtrar veículos</h3>
+        <button
+          type="button"
+          className="vitrine-filters__toggle"
+          aria-expanded={mobileOpen}
+          aria-controls="vitrine-filters-panel"
+          onClick={() => setMobileOpen((open) => !open)}
+        >
+          <span className="vitrine-filters__toggle-label">
+            Filtrar veículos
+            {activeCount > 0 && (
+              <span className="vitrine-filters__badge">{activeCount}</span>
+            )}
+          </span>
+          <span className="vitrine-filters__toggle-icon" aria-hidden>
+            {mobileOpen ? "−" : "+"}
+          </span>
+        </button>
+        <h3 className="vitrine-filters__title-desktop">Filtrar veículos</h3>
+        {activeCount > 0 && (
+          <span className="vitrine-filters__active-note">
+            {`${activeCount} filtro${activeCount !== 1 ? "s" : ""} ativo${activeCount !== 1 ? "s" : ""}`}
+          </span>
+        )}
       </div>
 
-      <div className="vitrine-filters__content">
-        {/* Busca por texto */}
+      <div className="vitrine-filters__content" id="vitrine-filters-panel">
         <div className="vitrine-filters__group">
           <label htmlFor="filtro-texto" className="vitrine-filters__label">
             Buscar
           </label>
           <input
             id="filtro-texto"
-            type="text"
+            type="search"
             placeholder="Modelo, marca, placa..."
             value={texto}
             onChange={(e) => setTexto(e.target.value)}
@@ -100,7 +149,6 @@ export function VitrineFilters({
           />
         </div>
 
-        {/* Marca */}
         {filtros.marcas.length > 0 && (
           <div className="vitrine-filters__group">
             <label htmlFor="filtro-marca" className="vitrine-filters__label">
@@ -109,7 +157,7 @@ export function VitrineFilters({
             <select
               id="filtro-marca"
               value={marcaId}
-              onChange={(e) => setMarcaId(e.target.value)}
+              onChange={(e) => handleMarcaChange(e.target.value)}
               className="vitrine-filters__select"
               disabled={isLoading}
             >
@@ -123,7 +171,6 @@ export function VitrineFilters({
           </div>
         )}
 
-        {/* Modelo (dependente de marca) */}
         {modelosFiltrados.length > 0 && (
           <div className="vitrine-filters__group">
             <label htmlFor="filtro-modelo" className="vitrine-filters__label">
@@ -146,7 +193,6 @@ export function VitrineFilters({
           </div>
         )}
 
-        {/* Anos */}
         <div className="vitrine-filters__row">
           <div className="vitrine-filters__group">
             <label htmlFor="filtro-ano-min" className="vitrine-filters__label">
@@ -161,6 +207,7 @@ export function VitrineFilters({
                 onChange={(e) => setAnoMin(e.target.value)}
                 className="vitrine-filters__input-small"
                 disabled={isLoading}
+                inputMode="numeric"
               />
               <input
                 type="number"
@@ -169,16 +216,17 @@ export function VitrineFilters({
                 onChange={(e) => setAnoMax(e.target.value)}
                 className="vitrine-filters__input-small"
                 disabled={isLoading}
+                inputMode="numeric"
+                aria-label="Ano até"
               />
             </div>
           </div>
         </div>
 
-        {/* Quilometragem */}
         <div className="vitrine-filters__row">
           <div className="vitrine-filters__group">
             <label htmlFor="filtro-km-min" className="vitrine-filters__label">
-              KM / até
+              KM de / até
             </label>
             <div className="vitrine-filters__range-row">
               <input
@@ -189,6 +237,7 @@ export function VitrineFilters({
                 onChange={(e) => setKmMin(e.target.value)}
                 className="vitrine-filters__input-small"
                 disabled={isLoading}
+                inputMode="numeric"
               />
               <input
                 type="number"
@@ -197,16 +246,17 @@ export function VitrineFilters({
                 onChange={(e) => setKmMax(e.target.value)}
                 className="vitrine-filters__input-small"
                 disabled={isLoading}
+                inputMode="numeric"
+                aria-label="Quilometragem até"
               />
             </div>
           </div>
         </div>
 
-        {/* Valores */}
         <div className="vitrine-filters__row">
           <div className="vitrine-filters__group">
             <label htmlFor="filtro-valor-min" className="vitrine-filters__label">
-              Valor / até
+              Valor de / até
             </label>
             <div className="vitrine-filters__range-row">
               <input
@@ -217,6 +267,7 @@ export function VitrineFilters({
                 onChange={(e) => setValorMin(e.target.value)}
                 className="vitrine-filters__input-small"
                 disabled={isLoading}
+                inputMode="numeric"
               />
               <input
                 type="number"
@@ -225,14 +276,16 @@ export function VitrineFilters({
                 onChange={(e) => setValorMax(e.target.value)}
                 className="vitrine-filters__input-small"
                 disabled={isLoading}
+                inputMode="numeric"
+                aria-label="Valor até"
               />
             </div>
           </div>
         </div>
 
-        {/* Botões */}
         <div className="vitrine-filters__actions">
           <button
+            type="button"
             onClick={handleAplicarFiltros}
             disabled={isLoading}
             className="vitrine-filters__btn vitrine-filters__btn--primary"
@@ -240,8 +293,9 @@ export function VitrineFilters({
             Aplicar filtros
           </button>
           <button
+            type="button"
             onClick={handleLimparFiltros}
-            disabled={isLoading}
+            disabled={isLoading || activeCount === 0}
             className="vitrine-filters__btn vitrine-filters__btn--secondary"
           >
             Limpar

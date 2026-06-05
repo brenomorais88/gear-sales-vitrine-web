@@ -2,9 +2,14 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { VitrineLayout } from "@/components/vitrine/VitrineLayout"
 import { VitrineAnuncioDetalhe } from "@/components/vitrine/VitrineAnuncioDetalheView"
+import { getAnuncioForRequest } from "@/src/lib/get-anuncio-for-request"
 import { getVitrineForRequest } from "@/src/lib/get-vitrine"
 import { getVitrineApiDominio } from "@/src/lib/vitrine-domain"
-import { fetchVitrineAnuncioDetalhe } from "@/src/services/vitrineAnunciosService"
+import {
+  buildAnuncioSeoMetadata,
+  buildVitrineSeoFallbackMetadata,
+  getRequestOrigin,
+} from "@/src/lib/vitrine-seo"
 import { VitrineAnunciosError } from "@/src/services/vitrineAnunciosService"
 
 interface AnuncioPageParams {
@@ -16,22 +21,14 @@ export async function generateMetadata(props: {
 }): Promise<Metadata> {
   try {
     const params = await props.params
-    const vitrine = await getVitrineForRequest()
-    const anuncio = await fetchVitrineAnuncioDetalhe(
-      params.id,
-      getVitrineApiDominio(vitrine)
-    )
+    const [{ vitrine, anuncio }, requestOrigin] = await Promise.all([
+      getAnuncioForRequest(params.id),
+      getRequestOrigin(),
+    ])
 
-    return {
-      title: `${anuncio.titulo} - ${vitrine.nome}`,
-      description: anuncio.descricao
-        ?.substring(0, 160)
-        .trim() || `Veículo ${anuncio.marca.nome} ${anuncio.modelo.nome} na vitrine da ${vitrine.nome}`,
-    }
+    return buildAnuncioSeoMetadata(vitrine, anuncio, requestOrigin)
   } catch {
-    return {
-      title: "Detalhes do Anúncio",
-    }
+    return buildVitrineSeoFallbackMetadata("anuncio")
   }
 }
 
@@ -80,26 +77,22 @@ export default async function AnuncioPage(props: {
   let hasError = false
 
   try {
-    vitrine = await getVitrineForRequest()
-  } catch {
-    hasError = true
-  }
-
-  if (!hasError) {
-    try {
-      anuncio = await fetchVitrineAnuncioDetalhe(
-        params.id,
-        getVitrineApiDominio(vitrine!)
-      )
-    } catch (error) {
-      if (
-        error instanceof VitrineAnunciosError &&
-        error.message.includes("não encontrado")
-      ) {
+    const result = await getAnuncioForRequest(params.id)
+    vitrine = result.vitrine
+    anuncio = result.anuncio
+  } catch (error) {
+    if (
+      error instanceof VitrineAnunciosError &&
+      error.message.includes("não encontrado")
+    ) {
+      try {
+        vitrine = await getVitrineForRequest()
         notFound = true
-      } else {
+      } catch {
         hasError = true
       }
+    } else {
+      hasError = true
     }
   }
 
@@ -120,8 +113,11 @@ export default async function AnuncioPage(props: {
   }
 
   return (
-    <VitrineLayout vitrine={vitrine!}>
-      <VitrineAnuncioDetalhe anuncio={anuncio} />
+    <VitrineLayout vitrine={vitrine!} fullWidth>
+      <VitrineAnuncioDetalhe
+        anuncio={anuncio}
+        dominio={getVitrineApiDominio(vitrine!)}
+      />
     </VitrineLayout>
   )
 }

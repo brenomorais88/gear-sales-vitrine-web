@@ -1,7 +1,7 @@
 import type { VitrineLoja } from "@/src/types/vitrine"
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"])
-const PUBLIC_STORE_DOMAIN_SUFFIX = "gearsales.com.br"
+export const PUBLIC_STORE_DOMAIN_SUFFIX = "gearsales.com.br"
 
 /**
  * Remove porta do host (ex.: localhost:3000 → localhost).
