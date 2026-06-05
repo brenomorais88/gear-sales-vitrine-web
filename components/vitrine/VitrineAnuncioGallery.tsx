@@ -17,12 +17,14 @@ export function VitrineAnuncioGallery({ titulo, fotos }: VitrineAnuncioGalleryPr
   if (!fotos || fotos.length === 0) {
     return (
       <div className="vitrine-gallery">
-        <div className="vitrine-gallery__main-placeholder">
+        <div className="vitrine-gallery__main">
+          <div className="vitrine-gallery__main-placeholder">
             <div className="vitrine-gallery__placeholder-content">
-            <span className="vitrine-gallery__placeholder-icon" aria-hidden>
-              🚗
-            </span>
-            <span>Fotos não disponíveis</span>
+              <span className="vitrine-gallery__placeholder-icon" aria-hidden>
+                🚗
+              </span>
+              <span>Fotos não disponíveis</span>
+            </div>
           </div>
         </div>
       </div>

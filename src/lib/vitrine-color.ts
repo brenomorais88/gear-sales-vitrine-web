@@ -4,7 +4,7 @@ const RGB_COLOR =
 const HSL_COLOR =
   /^hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%(?:\s*,\s*(0|1|0?\.\d+))?\s*\)$/i
 
-const DEFAULT_PRIMARY = "#c2410c"
+const DEFAULT_PRIMARY = "#B70000"
 
 function isRgbChannelValid(value: string): boolean {
   const channel = Number(value)

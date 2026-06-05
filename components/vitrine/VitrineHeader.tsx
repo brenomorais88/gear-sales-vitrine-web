@@ -15,9 +15,7 @@ interface VitrineHeaderProps {
 
 const NAV_ITEMS = [
   { href: "/#inicio", label: "Início", isActive: (path: string) => path === "/" },
-  { href: "/#estoque", label: "Estoque", isActive: () => false },
   { href: "/sobre", label: "Sobre", isActive: (path: string) => path === "/sobre" },
-  { href: "/sobre#contato", label: "Contato", isActive: () => false },
 ] as const
 
 export function VitrineHeader({ vitrine }: VitrineHeaderProps) {
