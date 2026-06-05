@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 
 import { VitrineError } from "@/components/vitrine/VitrineError"
-import { VitrineHome } from "@/components/vitrine/VitrineHome"
 import { VitrineNotFound } from "@/components/vitrine/VitrineNotFound"
 import { VitrineLayout } from "@/components/vitrine/VitrineLayout"
+import { VitrineSobre } from "@/components/vitrine/VitrineSobre"
 import { getVitrineForRequest } from "@/src/lib/get-vitrine"
 import { loadVitrinePage } from "@/src/lib/load-vitrine-page"
 
@@ -12,20 +12,20 @@ export async function generateMetadata(): Promise<Metadata> {
     const vitrine = await getVitrineForRequest()
 
     return {
-      title: vitrine.nome,
+      title: `Sobre - ${vitrine.nome}`,
       description:
         vitrine.descricao?.trim() ||
-        `Vitrine pública da loja ${vitrine.nome} no Gear Sales.`,
+        `Conheça a ${vitrine.nome} e veja os veículos disponíveis em nossa vitrine.`,
     }
   } catch {
     return {
-      title: "Gear Sales Vitrine",
-      description: "Vitrine pública de lojas no Gear Sales.",
+      title: "Sobre",
+      description: "Conheça nossa loja e veja os veículos disponíveis.",
     }
   }
 }
 
-export default async function HomePage() {
+export default async function SobrePage() {
   const { state, vitrine } = await loadVitrinePage()
 
   if (state === "not_found") {
@@ -38,7 +38,7 @@ export default async function HomePage() {
 
   return (
     <VitrineLayout vitrine={vitrine}>
-      <VitrineHome vitrine={vitrine} />
+      <VitrineSobre vitrine={vitrine} />
     </VitrineLayout>
   )
 }

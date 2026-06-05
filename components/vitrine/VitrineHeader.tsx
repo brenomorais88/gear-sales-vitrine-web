@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react"
+import Link from "next/link"
 
 import type { VitrineLoja } from "@/src/types/vitrine"
 import { getVitrineTheme } from "@/src/lib/vitrine-theme"
@@ -49,19 +50,19 @@ export function VitrineHeader({ vitrine }: VitrineHeaderProps) {
           <h1 className="vitrine-header__title">{vitrine.nome}</h1>
         </div>
 
-        <nav className="vitrine-header__nav">
-          <a href="#inicio" className="vitrine-header__nav-link">
+        <nav className="vitrine-header__nav" aria-label="Navegação principal">
+          <Link href="/#inicio" className="vitrine-header__nav-link">
             Início
-          </a>
-          <a href="#estoque" className="vitrine-header__nav-link">
+          </Link>
+          <Link href="/#estoque" className="vitrine-header__nav-link">
             Estoque
-          </a>
-          <a href="/sobre" className="vitrine-header__nav-link">
+          </Link>
+          <Link href="/sobre" className="vitrine-header__nav-link">
             Sobre
-          </a>
-          <a href="/contato" className="vitrine-header__nav-link">
+          </Link>
+          <Link href="/contato" className="vitrine-header__nav-link">
             Contato
-          </a>
+          </Link>
         </nav>
 
         {whatsappHref && (

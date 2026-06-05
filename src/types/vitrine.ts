@@ -1,3 +1,13 @@
+export interface PublicHorarioFuncionamentoResponse {
+  segunda?: string | null
+  terca?: string | null
+  quarta?: string | null
+  quinta?: string | null
+  sexta?: string | null
+  sabado?: string | null
+  domingo?: string | null
+}
+
 export interface VitrineLoja {
   id: string
   nome: string
@@ -10,9 +20,13 @@ export interface VitrineLoja {
   logoUrl?: string | null
   bannerUrl?: string | null
   corPrincipal?: string | null
+  horarioFuncionamento?: PublicHorarioFuncionamentoResponse | null
   enderecoPaginaPublica: string
   urlPublica: string
 }
+
+/** Alias do contrato público da vitrine (GET /public/vitrine/por-dominio). */
+export type PublicVitrineResponse = VitrineLoja
 
 // Tipos para Anúncios e Filtros (V2)
 
