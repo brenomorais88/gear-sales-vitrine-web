@@ -111,48 +111,8 @@ export function VitrineHomeClient({ vitrine }: VitrineHomeClientProps) {
     { value: "ano_mais_antigo", label: "Ano mais antigo" },
   ]
 
-  const descricao = vitrine.descricao?.trim() || 
-    "Confira os veículos disponíveis e fale diretamente com a revenda."
-  const localizacao = vitrine.cidade && vitrine.estado 
-    ? `${vitrine.cidade}, ${vitrine.estado}`
-    : null
-
   return (
     <div className="vitrine-home-client">
-      {/* Hero Section */}
-      <section className="vitrine-hero" aria-labelledby="vitrine-home-title">
-        <div className="vitrine-hero__container">
-          <div className="vitrine-hero__content">
-            <h1 id="vitrine-home-title" className="vitrine-hero__title">
-              {vitrine.nome}
-            </h1>
-            <p className="vitrine-hero__description">{descricao}</p>
-            {localizacao && (
-              <p className="vitrine-hero__location">{localizacao}</p>
-            )}
-            <div className="vitrine-hero__actions">
-              <a
-                href="#estoque"
-                className="vitrine-hero__btn vitrine-hero__btn--primary"
-              >
-                Ver veículos
-              </a>
-              {vitrine.whatsapp && (
-                <a
-                  href={`https://wa.me/${vitrine.whatsapp.replace(/\D/g, "")}?text=Olá, encontrei a vitrine da ${encodeURIComponent(vitrine.nome)} e gostaria de mais informações.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="vitrine-hero__btn vitrine-hero__btn--secondary"
-                >
-                  Falar no WhatsApp
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Filtros e Listagem */}
       <section id="estoque" className="vitrine-anuncios-main">
         <div className="vitrine-anuncios-container">
           <div className="vitrine-anuncios-layout">

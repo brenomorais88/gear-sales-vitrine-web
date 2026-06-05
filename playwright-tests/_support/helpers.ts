@@ -1,7 +1,7 @@
 import { expect, type Page } from "@playwright/test"
 
 export async function waitForHomeLoaded(page: Page) {
-  await expect(page.locator("#vitrine-home-title")).toHaveText("Revenda Teste E2E")
+  await expect(page.locator(".vitrine-header__title")).toHaveText("Revenda Teste E2E")
   await expect(page.locator("#estoque")).toBeVisible()
 }
 

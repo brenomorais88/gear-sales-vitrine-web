@@ -659,92 +659,6 @@ a:hover {
 .vitrine-home-client {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-}
-
-/* Hero Section */
-.vitrine-hero {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--vitrine-primary) 75%, white),
-    var(--vitrine-primary)
-  );
-  color: var(--vitrine-header-text);
-  padding: 3rem 1rem;
-}
-
-.vitrine-hero__container {
-  max-width: 960px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.vitrine-hero__content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.vitrine-hero__title {
-  margin: 0;
-  font-size: 2.5rem;
-  line-height: 1.2;
-  font-weight: 700;
-}
-
-.vitrine-hero__description {
-  margin: 0;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  opacity: 0.95;
-}
-
-.vitrine-hero__location {
-  margin: 0;
-  font-size: 1rem;
-  opacity: 0.85;
-}
-
-.vitrine-hero__actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-}
-
-.vitrine-hero__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.75rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.vitrine-hero__btn--primary {
-  background: var(--vitrine-card);
-  color: var(--vitrine-primary);
-}
-
-.vitrine-hero__btn--primary:hover {
-  opacity: 0.9;
-  transform: translateY(-2px);
-}
-
-.vitrine-hero__btn--secondary {
-  background: rgba(255, 255, 255, 0.25);
-  color: var(--vitrine-header-text);
-  border: 2px solid var(--vitrine-header-text);
-}
-
-.vitrine-hero__btn--secondary:hover {
-  background: rgba(255, 255, 255, 0.35);
 }
 
 /* Main Anúncios Section */
@@ -1354,23 +1268,6 @@ a:hover {
 
 /* Responsivo */
 @media (max-width: 768px) {
-  .vitrine-hero__title {
-    font-size: 1.75rem;
-  }
-
-  .vitrine-hero__description {
-    font-size: 1rem;
-  }
-
-  .vitrine-hero__actions {
-    flex-direction: column;
-  }
-
-  .vitrine-hero__btn {
-    width: 100%;
-    text-align: center;
-  }
-
   .vitrine-anuncios-layout {
     grid-template-columns: 1fr;
   }
@@ -1420,18 +1317,6 @@ a:hover {
 }
 
 @media (max-width: 640px) {
-  .vitrine-hero {
-    padding: 2rem 1rem;
-  }
-
-  .vitrine-hero__title {
-    font-size: 1.5rem;
-  }
-
-  .vitrine-hero__description {
-    font-size: 0.95rem;
-  }
-
   .vitrine-anuncios-main {
     padding: 1rem 0.5rem;
   }
